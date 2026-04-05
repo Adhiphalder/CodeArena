@@ -4,7 +4,6 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import SoftBackdrop from "../../components/SoftBackdrop";
 import LenisScroll from "../../components/lenis";
-
 import Hero from "../../components/Hero";
 import Features from "../../components/Features";
 import Pricing from "../../components/Pricing";
