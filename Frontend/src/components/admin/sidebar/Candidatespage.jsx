@@ -45,6 +45,16 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const BASE_URL = API_URL.replace("/api", "");
 
+const getFileUrl = (path) => {
+    if (!path) return "";
+
+    const clean = path.trim();
+
+    return /^https?:\/\//i.test(clean)
+        ? clean
+        : `${BASE_URL}${clean}`;
+};
+
 // ── helpers ────────────────────────────────────────────────────────────────────
 const statusStyle = {
     Active: { cls: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25", dot: "#4ade80" },
@@ -123,6 +133,11 @@ const CandidateDrawer = ({
     setDeleteCandidateData,
 }) => {
     if (!candidate) return null;
+    console.log("Candidate Data:", candidate);
+    console.log("Education:", candidate.education);
+    console.log("Resume:", candidate.resumeUrl);
+    console.log("Aadhaar:", candidate.aadhaarDoc);
+    console.log("PAN:", candidate.panDoc);
     const st = statusStyle[candidate.status] ?? statusStyle["Active"];
     const [showAllDrives, setShowAllDrives] = useState(false);
     const [showShortlistModal, setShowShortlistModal] = useState(false);
@@ -460,7 +475,7 @@ const CandidateDrawer = ({
                                                             {ed.docs.map((doc, j) => (
                                                                 <a
                                                                     key={doc._id ?? j}
-                                                                    href={`${BASE_URL}${doc.path}`}
+                                                                    href={getFileUrl(doc.path)}
                                                                     download={doc.name}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
@@ -505,7 +520,7 @@ const CandidateDrawer = ({
                                         {/* Resume */}
                                         {candidate.resumeUrl && (
                                             <a
-                                                 href={`${BASE_URL}${candidate.resumeUrl}`}
+                                                href={getFileUrl(candidate.resumeUrl)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 download={candidate.resumeOriginalName}
@@ -544,7 +559,7 @@ const CandidateDrawer = ({
                                         {/* Aadhaar */}
                                         {candidate.aadhaarDoc?.path && (
                                             <a
-                                                href={`${BASE_URL}${candidate.aadhaarDoc.path}`}
+                                            href={getFileUrl(candidate.aadhaarDoc.path)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 download={candidate.aadhaarDoc.name}
@@ -584,7 +599,7 @@ const CandidateDrawer = ({
                                         {/* PAN */}
                                         {candidate.panDoc?.path && (
                                             <a
-                                                href={`${BASE_URL}${candidate.panDoc.path}`}
+                                            href={getFileUrl(candidate.panDoc.path)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 download={candidate.panDoc.name}

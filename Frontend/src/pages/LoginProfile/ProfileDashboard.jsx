@@ -288,7 +288,14 @@ function BackgroundOrbs() {
 // ── Doc Preview Modal ─────────────────────────────────────────────────────────
 function DocPreviewModal({ doc, onClose }) {
   if (!doc) return null;
-  const url = doc.url || (doc.path ? `${SERVER_URL}${doc.path}` : null);
+  
+  const rawPath = (doc.url || doc.path || "").trim();
+  
+  
+  const url = /^https?:\/\//i.test(rawPath)
+    ? rawPath
+    : `${SERVER_URL}${rawPath}`;
+  
   if (!url) return null;
   const isImage = /\.(jpg|jpeg|png)$/i.test(doc?.name || "");
   return (
@@ -699,7 +706,12 @@ function EduCard({ edu, editing, onFieldChange, onDocUpload, onRemoveDoc, upload
       {editing && edu.docs.length >= 1 && (
         <p style={{ fontSize: 11, color: COLORS.grayMuted, fontFamily: "'Space Mono',monospace", marginTop: 8, textAlign: "center", opacity: 0.7 }}>Max 1 document per qualification — remove to replace</p>
       )}
-      <DocPreviewModal doc={previewDoc} onClose={() => setPreviewDoc(null)} />
+      {previewDoc && (
+        <DocPreviewModal
+          doc={previewDoc}
+          onClose={() => setPreviewDoc(null)}
+        />
+      )}
     </div>
   );
 }
@@ -1005,7 +1017,12 @@ function ResumeSection({ initialData, onSaved }) {
         )}
       </div>
       {toast && <Toast message={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
-      <DocPreviewModal doc={previewDoc} onClose={() => setPreviewDoc(null)} />
+      {previewDoc && (
+        <DocPreviewModal
+          doc={previewDoc}
+          onClose={() => setPreviewDoc(null)}
+        />
+      )}
     </>
   );
 }
@@ -1053,7 +1070,12 @@ function KycDocWidget({ label, docData, fieldName, editing, uploading, onUpload 
           </div>
         )
       )}
-      <DocPreviewModal doc={previewDoc} onClose={() => setPreviewDoc(null)} />
+      {previewDoc && (
+        <DocPreviewModal
+          doc={previewDoc}
+          onClose={() => setPreviewDoc(null)}
+        />
+      )}
     </div>
   );
 }
