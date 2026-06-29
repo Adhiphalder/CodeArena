@@ -290,7 +290,7 @@ function DocPreviewModal({ doc, onClose }) {
   if (!doc) return null;
   const url = doc.url || (doc.path ? `${SERVER_URL}${doc.path}` : null);
   if (!url) return null;
-  const isImage = /\.(jpg|jpeg|png)$/i.test(doc.name || "");
+  const isImage = /\.(jpg|jpeg|png)$/i.test(doc?.name || "");
   return (
     <div onClick={onClose} style={{
       position: "fixed", inset: 0, zIndex: 10000,
@@ -314,7 +314,7 @@ function DocPreviewModal({ doc, onClose }) {
             <span style={{ color: COLORS.accent, display: "flex" }}>
               {isImage ? <ImageIcon size={18} color={COLORS.accent} /> : <FileIcon size={18} color={COLORS.accent} />}
             </span>
-            <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 12, color: "#fff", maxWidth: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.name}</span>
+            <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 12, color: "#fff", maxWidth: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc?.name || "Document"}</span>
           </div>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <a href={url} target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: COLORS.accent, fontFamily: "'Space Mono',monospace", border: `1px solid rgba(108,99,255,0.35)`, padding: "5px 12px", borderRadius: 8, textDecoration: "none", background: "rgba(108,99,255,0.12)" }}>
@@ -325,8 +325,8 @@ function DocPreviewModal({ doc, onClose }) {
         </div>
         <div style={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
           {isImage
-            ? <img src={url} alt={doc.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-            : <iframe src={url} title={doc.name} style={{ width: "100%", height: "75vh", border: "none", display: "block", background: "#fff" }} />
+            ? <img src={url} alt={doc?.name || "Document"} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            : <iframe src={url} title={doc?.name || "Document"} style={{ width: "100%", height: "75vh", border: "none", display: "block", background: "#fff" }} />
           }
         </div>
       </div>
@@ -681,8 +681,8 @@ function EduCard({ edu, editing, onFieldChange, onDocUpload, onRemoveDoc, upload
       {edu.docs.map((d, i) => (
         <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(34,197,94,0.05)", backdropFilter: "blur(6px)", padding: "8px 12px", borderRadius: 10, border: `1px solid rgba(34,197,94,0.18)`, marginBottom: 6, fontSize: 12 }}>
           <FileIcon size={14} color={COLORS.green} />
-          <span style={{ color: COLORS.green, fontFamily: "'Space Mono',monospace", fontSize: 11, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span>
-          <span style={{ fontSize: 10, color: COLORS.grayMuted, flexShrink: 0 }}>{d.size}</span>
+          <span style={{ color: COLORS.green, fontFamily: "'Space Mono',monospace", fontSize: 11, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d?.name || "Document"}</span>
+          <span style={{ fontSize: 10, color: COLORS.grayMuted, flexShrink: 0 }}>{d?.size || "-"}</span>
           <button onClick={() => setPreviewDoc(d)} className="action-btn-hover" style={{ background: "rgba(108,99,255,0.1)", border: `1px solid rgba(108,99,255,0.28)`, color: COLORS.accent, cursor: "pointer", fontSize: 10, padding: "3px 10px", borderRadius: 7, fontFamily: "'Space Mono',monospace", flexShrink: 0 }}>Preview</button>
           {editing && <button onClick={() => onRemoveDoc(id, d._id, i)} style={{ background: "none", border: "none", color: COLORS.red, cursor: "pointer", fontSize: 14, padding: 0, flexShrink: 0, lineHeight: 1 }}>✕</button>}
         </div>
@@ -736,7 +736,7 @@ function EducationSection({ initialData, onSaved }) {
       } catch (err) { setToast({ msg: err.message || "Upload failed", type: "error" }); }
       finally { setUploadingDocId(null); }
     } else {
-      const preview = { name: file.name, size: `${Math.round(file.size / 1024)} KB`, _file: file };
+      const preview = { name: file?.name || "Document", size: `${Math.round(file.size / 1024)} KB`, _file: file };
       setEduList(prev => prev.map(ed => ed.tempId === id ? { ...ed, docs: [...ed.docs, preview] } : ed));
     }
   };
@@ -1014,7 +1014,7 @@ function ResumeSection({ initialData, onSaved }) {
 function KycDocWidget({ label, docData, fieldName, editing, uploading, onUpload }) {
   const [previewDoc, setPreviewDoc] = useState(null);
   const hasDoc = docData?.name && docData?.path;
-  const isImage = docData?.name && /\.(jpg|jpeg|png)$/i.test(docData.name);
+  const isImage = docData?.name && /\.(jpg|jpeg|png)$/i.test(docData?.name);
   return (
     <div style={{ marginBottom: 4 }}>
       <label style={{ fontSize: 10, display: "block", marginBottom: 8, letterSpacing: 1.2, textTransform: "uppercase", fontFamily: "'Space Mono',monospace", color: editing ? COLORS.accent : "rgba(161,161,170,0.7)" }}>
@@ -1026,7 +1026,7 @@ function KycDocWidget({ label, docData, fieldName, editing, uploading, onUpload 
             {isImage ? <ImageIcon size={16} color={COLORS.green} /> : <FileIcon size={16} color={COLORS.green} />}
           </span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: COLORS.green, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{docData.name}</p>
+            <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, color: COLORS.green, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{docData?.name}</p>
             {docData.size && <p style={{ fontSize: 10, color: COLORS.grayMuted, margin: "2px 0 0" }}>{docData.size}</p>}
           </div>
           <button onClick={() => setPreviewDoc(docData)} className="action-btn-hover" style={{ fontSize: 10, color: COLORS.accent, fontFamily: "'Space Mono',monospace", border: `1px solid rgba(108,99,255,0.28)`, padding: "4px 10px", borderRadius: 7, background: "rgba(108,99,255,0.1)", cursor: "pointer", flexShrink: 0 }}>Preview</button>
@@ -1102,7 +1102,12 @@ function KycSection({ initialData, onSaved }) {
       const res = await fetch(`${API}/profile/complete-setup`, { method: "POST", headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, body: form });
       const json = await res.json();
       if (!json.success) throw new Error(json.message);
-      const docInfo = { name: json.doc.name, size: json.doc.size, path: json.doc.path, url: json.doc.url };
+      const docInfo = {
+        name: json.doc?.name || "Document",
+        size: json.doc?.size,
+        path: json.doc?.path,
+        url: json.doc?.url,
+      };
       if (field === "aadhaar") setAadhaarDoc(docInfo);
       if (field === "pan") setPanDoc(docInfo);
       setToast({ msg: `${field === "aadhaar" ? "Aadhaar" : "PAN"} document uploaded!`, type: "success" });
